@@ -1,2 +1,2 @@
 # BoredGame
-demo of three simple bored games in unity
+demo of three simple board games in unity
