@@ -34,22 +34,33 @@ public class MenuController : MonoBehaviour
         
     }
     public void OnWordGameClicked(){
+        PlayerPrefs.SetString("GamePlayed","Word:1") ;
                 SceneManager.LoadScene("thWordGame");
+                            
+
 
     }   
      public void OnLineGameClicked(){
+                     PlayerPrefs.SetString("GamePlayed","Line:1") ;
+
                 SceneManager.LoadScene("LinesandBoxGame");
 
     }    
      public void OnXOGameClicked(int i){
          if(i==1){
              level.onePlayer();
+            PlayerPrefs.SetString("GamePlayed","XO:1") ;
+
          }
          else if(i==2){
              level.multiPlayer();
+                         PlayerPrefs.SetString("GamePlayed","XO:2") ;
+
          }
          else if(i==3){
              level.AIPlayer();
+                         PlayerPrefs.SetString("GamePlayed","XO:3") ;
+
          }
                 SceneManager.LoadScene("tictactoGame");
 
@@ -106,6 +117,31 @@ public class MenuController : MonoBehaviour
                 i.SetActive(false);
 
             }
+         }
+         public void OnContClicked(){
+                    string GameIDX=PlayerPrefs.GetString("GamePlayed"," ") ;
+                    if (GameIDX=="XO:1"){
+                        OnXOGameClicked(1);
+                    }
+                    else if (GameIDX=="XO:2"){
+                        OnXOGameClicked(2);
+                    }
+                    else if (GameIDX=="XO:3"){
+                        OnXOGameClicked(3);
+                    }
+                    else if (GameIDX=="Line:1"){
+                        OnLineGameClicked();
+                    }
+                    else if (GameIDX=="Line:2"){
+                        OnLineGameClicked();
+                    }
+                    else if (GameIDX=="Word:1"){
+                        OnWordGameClicked();
+                    }
+                    else{
+                        OnXOGameClicked(1);
+                    }
+
          }
 
 
