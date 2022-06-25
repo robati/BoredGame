@@ -21,10 +21,13 @@ public class gameControl : MonoBehaviour {
     public Transform box;
     public Text winner;
     private GameObject panel ;
-    private int endOfColumn = 2, endOfLine = 4;
+    private int endOfColumn = 3, endOfLine = 3;
     private int starBoxCount = 0;
     bool done = false;
     bool lockedBoard=false;
+    public Transform boxlineTransform;
+    public Transform boxlinepanel;
+
 
     void Awake () {
         // if(menu.gameStatus == menu.gameState.multiplayer)
@@ -59,10 +62,10 @@ public class gameControl : MonoBehaviour {
             float isStarWinner = (float)starBoxCount / ((float)(endOfColumn + 1) * (float)(endOfLine + 1));
             winner.text = isStarWinner == 0.5f ? "scores tied!" : (isStarWinner > 0.5f ? "star won!!!" : "lightning won !!!");//) + starBoxCount + "-" + isStarWinner;
         }
-        // if (menu.gameStatus == menu.gameState.single && 
-        if(lightningTurn && !lockedBoard)
-            rivalPlay();
-           // StartCoroutine(rivalPlay());
+     //   // if (menu.gameStatus == menu.gameState.single && 
+        // if(lightningTurn && !lockedBoard)
+        //     rivalPlay();
+       //    // StartCoroutine(rivalPlay());
 
     }
     private void createTable()
@@ -72,20 +75,23 @@ public class gameControl : MonoBehaviour {
 
         for (int i = endOfColumn; i > start - 1; i--)
         {
+            Transform thisLineTransform = Instantiate(boxlineTransform);
+                thisLineTransform.SetParent(boxlinepanel, false);
+                thisLineTransform.gameObject.SetActive(true);
             for (int j = endOfLine; j > start - 1; j--)
             {
-                int x = j * 90 - 350;
-                int y = i * 90 - 80;
 
-                Transform tempTransformObject = Instantiate(box, new Vector3(x, y, 0), Quaternion.Euler(0, 0, 0));
-                tempTransformObject.SetParent(transform, false);
 
+                 Transform tempTransformObject = Instantiate(box);
+                tempTransformObject.SetParent(thisLineTransform, false);
                 if (j != endOfLine)
                 {
                     lineAndDots lineAndDotsScrip = tempTransformObject.GetComponent<lineAndDots>();
                     lineAndDots otherButtonlineAndDotsScrip = getScript(counter - 1);
                      UnityEngine.Events.UnityAction leftButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.leftButton); };
                     lineAndDotsScrip.rightButtonEvent.AddListener(leftButtonAction);
+                
+             
                 }
                 if (i != endOfColumn)
                 {
