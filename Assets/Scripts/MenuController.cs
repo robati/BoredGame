@@ -40,10 +40,25 @@ public class MenuController : MonoBehaviour
 
 
     }   
-     public void OnLineGameClicked(){
-                     PlayerPrefs.SetString("GamePlayed","Line:1") ;
+     public void OnLineGameClicked(int i){
+         if(i==1){
+             level.onePlayer();
+            PlayerPrefs.SetString("GamePlayed","Line:1") ;
 
-                SceneManager.LoadScene("LinesandBoxGame");
+         }
+         else if(i==2){
+             level.multiPlayer();
+                         PlayerPrefs.SetString("GamePlayed","Line:2") ;
+
+         }
+         else if(i==3){
+             level.AIPlayer();
+                         PlayerPrefs.SetString("GamePlayed","Line:3") ;
+
+         }
+                    //  PlayerPrefs.SetString("GamePlayed","Line:1") ;
+
+                SceneManager.LoadScene("theDotsGame");
 
     }    
      public void OnXOGameClicked(int i){
@@ -130,10 +145,10 @@ public class MenuController : MonoBehaviour
                         OnXOGameClicked(3);
                     }
                     else if (GameIDX=="Line:1"){
-                        OnLineGameClicked();
+                        OnLineGameClicked(1);
                     }
                     else if (GameIDX=="Line:2"){
-                        OnLineGameClicked();
+                        OnLineGameClicked(2);
                     }
                     else if (GameIDX=="Word:1"){
                         OnWordGameClicked();

@@ -5,6 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/gameofDots.unity
+    guid: 6210bb02ca2e72d44a32e544adb7676a
   - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: ef66f92180e612045b58d25f80a6b758
@@ -12,9 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/thWordGame.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/LinesandBoxGame.unity
-    guid: 1ea91326a91597847b5b9faff03549ab
-  - enabled: 1
     path: Assets/Scenes/tictactoGame.unity
     guid: d2078784a543cce46a78d2fa92054e49
+  - enabled: 1
+    path: Assets/Scenes/theDotsGame.unity
+    guid: 8cebbefddbb5b964da2571257dce8d7d
+  - enabled: 0
+    path: Assets/Scenes/LinesandBoxGame.unity
+    guid: 1ea91326a91597847b5b9faff03549ab
   m_configObjects: {}

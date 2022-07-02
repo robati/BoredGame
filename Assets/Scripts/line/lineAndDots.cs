@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
+namespace xo
+{
 public enum buttonname { leftButton=0, rightButton=1, bottomButton=2, topButton=3 };
 public class lineAndDots : MonoBehaviour {
 
@@ -21,6 +23,7 @@ public class lineAndDots : MonoBehaviour {
 
 
     public Button[] buttons = new Button[4];
+    public Image[] buttonsIm = new Image[4];
     public List<int> buttonnumbers= new List<int> { 0, 1, 2, 3 };
     public bool isFinishedBox = false;
     public bool isStarWinner = false;
@@ -46,12 +49,13 @@ public class lineAndDots : MonoBehaviour {
             topButtonEvent.Invoke();
 
        int idx= buttonnumbers.LastIndexOf((int)buttonnumber);
-        Image _image = buttons[idx].GetComponent<Image>();
+        //Image _image = buttons[idx].GetComponent<Image>();
 
         if(otherColor)
-            _image.sprite = lineselected2;
+            buttonsIm[idx].sprite = lineselected2;
+            // _image.sprite = lineselected2;
         else
-            _image.sprite = lineselected1;
+            buttonsIm[idx].sprite = lineselected1;
         buttons[idx].enabled=false;
         if (isFinished())
         {
@@ -80,4 +84,5 @@ public class lineAndDots : MonoBehaviour {
 
 
     
+};
 }
