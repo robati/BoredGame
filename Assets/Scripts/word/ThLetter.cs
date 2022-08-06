@@ -9,6 +9,7 @@ public class ThLetter : MonoBehaviour
     public string id="none";
     public Text name;
     public GameObject GameControl;
+    public GameObject Highlight;
     ThWordGame controll;
     Animator Anim;
 
@@ -30,9 +31,9 @@ public class ThLetter : MonoBehaviour
         // Debug.Log(controll.MainLetter+","+id);
     }
     // Update is called once per frame
-    void Update()
+    public void HighlightOn(bool on)
     {
-        
+        Highlight.SetActive(on);
     }
     public void Fin(){
         controll.LetterAnimFin(id.ToCharArray()[0]);

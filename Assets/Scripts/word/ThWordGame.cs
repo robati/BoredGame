@@ -12,14 +12,16 @@ public class ThWordGame : MonoBehaviour
     public GameObject TheLetterprefab;
     public GameObject Box;
     public GameObject WinPanel;
-    string[] thWords={"DREAMS","TRUE","REALLY","GREAT","KIND","LOVE","PINK"};
+    // string[] thWords={"aaaa","abab","bool"};
+    string[] thWords={"abcdefghijklmnop","DREAMS","TRUE","REALLY","GREAT","KIND","LOVE","PINK","MUSIC","PIANO","OCEAN","RAINBOWS","CUPCAKES"};
     char[] thLetters={'Q','W','E','R','T','Y','U','I','O','P','L','K',
                 'J','H','G','F','D','S','A','Z','X','C','V','B','N','M'};
     public string MainLetter;
     public Text MainTxt;
+    public Text MainTxt2;
     int WordIDX;
     int LetterIndex;
-    
+    List<ThLetter> listOfLet=new List<ThLetter>();
     int AllLettersNumber=7;
     char[] MainWordLetters;
     void Start()
@@ -37,6 +39,7 @@ public class ThWordGame : MonoBehaviour
         PrepareLetters(thWords[WordIDX]); 
 
         MainTxt.text=thWords[WordIDX];
+        MainTxt2.text=thWords[WordIDX];
         }
     public void CorrectLetterEntered(){
         LetterIndex++;
@@ -46,7 +49,8 @@ public class ThWordGame : MonoBehaviour
     }
     public void LetterAnimFin(char inCharacter){
         //    Debug.Log(MainWordLetters[MainWordLetters.Length-1]+"  "+r.ToCharArray()[0]);
-        if(inCharacter==MainWordLetters[MainWordLetters.Length-1]){
+        // if(inCharacter==MainWordLetters[MainWordLetters.Length-1]){
+        if(LetterIndex>=MainWordLetters.Length){
                 StartCoroutine(ShowWinPanel(0.5f));
                 WordIDX++;
                 PlayerPrefs.SetInt("wordIDX",WordIDX) ;
@@ -56,6 +60,22 @@ public class ThWordGame : MonoBehaviour
     public void again(){
         SceneManager.LoadScene("thWordGame");
 
+    }
+    public ThLetter getMainLetter(){
+        foreach ( ThLetter i in listOfLet)
+        {
+            if(i!=null)
+            if(i.id==MainLetter){
+            
+                Debug.Log(i.id);
+                return i;
+            }
+        }
+        return null;
+    }
+    public void mainLetterHighlight(bool on){
+        ThLetter i =getMainLetter();
+        i.HighlightOn(on);
     }
     public void onToMenu(){
         SceneManager.LoadScene("Menu");
@@ -93,7 +113,10 @@ public class ThWordGame : MonoBehaviour
             GameObject letterPref=Instantiate<GameObject>(TheLetterprefab,position,new Quaternion(),Box.transform);
             letterPref.transform.localPosition=position;
             letterPref.SetActive(true);
-            letterPref.GetComponent<ThLetter>().id=letters[i].ToString();
+            ThLetter let = letterPref.GetComponent<ThLetter>();
+            let.id=letters[i].ToString();
+            listOfLet.Add(let);
+            // letterPref.GetComponent<ThLetter>().id=letters[i].ToString();
             letterPref.GetComponent<Rigidbody2D>().AddForce(new Vector2(300,200));
         }
     }
