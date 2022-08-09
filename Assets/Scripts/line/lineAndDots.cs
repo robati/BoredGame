@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace xo
 {
@@ -72,6 +73,13 @@ public class lineAndDots : MonoBehaviour {
             }
         }
     }
+
+public void back()
+        {
+            SceneManager.LoadScene(0);
+        }
+
+
     bool isFinished()
     {
         foreach (Button button in buttons)

@@ -25,7 +25,9 @@ public class gameControl : MonoBehaviour {
     // public List<lineAndDots> lineAndDots;
     public Transform box;
     public Text winner;
-    private GameObject panel ;
+    public Image winnerImage;
+
+    public GameObject panel ;
     private int endOfColumn = 3, endOfLine = 3;
     private int starBoxCount = 0;
     bool done = false;
@@ -66,9 +68,14 @@ public class gameControl : MonoBehaviour {
         if (isGameFinsihed()&&!done)
         {
             done = true;
-            // panel.SetActive(true);
+             panel.SetActive(true);
             float isStarWinner = (float)starBoxCount / ((float)(endOfColumn + 1) * (float)(endOfLine + 1));
-            winner.text = isStarWinner == 0.5f ? "scores tied!" : (isStarWinner > 0.5f ? "star won!!!" : "lightning won !!!");//) + starBoxCount + "-" + isStarWinner;
+            winner.text = isStarWinner == 0.5f ? "no" : (isStarWinner > 0.5f ? "x" : "o");//) + starBoxCount + "-" + isStarWinner;
+            if (isStarWinner > 0.5f)
+                 winnerImage.sprite = startTurnPic; 
+            else if( isStarWinner == 0.5f )
+                winnerImage.gameObject.SetActive(false);
+            else winnerImage.sprite = lightningTurnPic;
         }
        if (isOnePlayer)// && 
         if(lightningTurn && !lockedBoard)

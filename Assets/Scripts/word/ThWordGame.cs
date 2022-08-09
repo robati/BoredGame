@@ -24,6 +24,7 @@ public class ThWordGame : MonoBehaviour
     List<ThLetter> listOfLet=new List<ThLetter>();
     int AllLettersNumber=7;
     char[] MainWordLetters;
+    bool gameStarted=false;
     void Start()
     {
         Time.timeScale = 0f;
@@ -78,6 +79,7 @@ public class ThWordGame : MonoBehaviour
         i.HighlightOn(on);
     }
     public void onToMenu(){
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
 
     }
@@ -126,7 +128,10 @@ public class ThWordGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(!gameStarted){
+            gameStarted=true;
+            Debug.Log("ohey");
+        }
     }
     public void StartGame(bool play){
         if(play)

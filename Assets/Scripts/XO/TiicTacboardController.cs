@@ -178,6 +178,7 @@ namespace xo
             lockGame(true);
             text.text = "wait";
             yield return new WaitForSeconds(0.5f);
+            text.text = "wait is over";
             Buttons[number].toggle();
             text.text = "your turn";
 
