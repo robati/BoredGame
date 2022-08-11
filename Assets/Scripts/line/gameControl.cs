@@ -69,8 +69,9 @@ public class gameControl : MonoBehaviour {
         {
             done = true;
              panel.SetActive(true);
-            float isStarWinner = (float)starBoxCount / ((float)(endOfColumn + 1) * (float)(endOfLine + 1));
-            winner.text = isStarWinner == 0.5f ? "no" : (isStarWinner > 0.5f ? "x" : "o");//) + starBoxCount + "-" + isStarWinner;
+            float isStarWinner = (float)starBoxCount /((float)(endOfColumn + 1) * (float)(endOfLine + 1));
+            winner.text = isStarWinner == 0.5f ? "No" :"";// (isStarWinner > 0.5f ? "x" : "o");//) + starBoxCount + "-" + isStarWinner;
+           
             if (isStarWinner > 0.5f)
                  winnerImage.sprite = startTurnPic; 
             else if( isStarWinner == 0.5f )

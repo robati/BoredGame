@@ -19,18 +19,16 @@ namespace xo
         private bool hasSomeoneWon = false;
         private bool locked = false;
         static public bool needToUpdateGame = false;
-        // Use this for initialization
+
         void Start()
         {
             isOnePlayer = (levelSelector.gameStatus != gameState.multiplayer);
             isAIgame= (levelSelector.gameStatus == gameState.AI);
-            // if(isAIgame){//pakkon
-            //     heartTurn=false;
-            // }
+
             playAgain();
         }
 
-        // Update is called once per frame
+
         void Update()
         {
             if (!hasSomeoneWon)
@@ -42,17 +40,17 @@ namespace xo
                 }
                 else if (isOnePlayer && !locked)//the AI has not already locked the game
                 {
-                    if (!heartTurn && !hasSomeoneWon)//double check needed unless when o wins x plays
+                    if (!heartTurn && !hasSomeoneWon)//double check needed lest  o won and x plays
                     {
                         int number=0;
-                        if(isAIgame){
+                        if(isAIgame){//Challenge AI choose box
                              number= AIfindBestNumber();
-
                         }  
-                        else {
-                             number = Random.Range(0, 9);//random AI.
+                        else {//random AI choose box
+                             number = Random.Range(0, 9);
                         }
-                        if (Buttons[number].state == state.unUsed)
+
+                        if (Buttons[number].state == state.unUsed)// AI plays selected box
                         {
                             StartCoroutine(rivalPlay(number));
                         }
@@ -67,6 +65,7 @@ namespace xo
 
             
         }
+        //checks who won on two diagons
         PLAYER checkDiagon(List<TicTacButton> Buttons){
             if (isSame(Buttons[0], Buttons[4], Buttons[8]) || isSame(Buttons[2], Buttons[4], Buttons[6])){
                 text.text = Buttons[4].state == state.ex ? "x wins!!!":"o wins!!!";
@@ -76,22 +75,23 @@ namespace xo
                 return PLAYER.None;
             }
         }
-        
+         //checks who won on Horizontal lines
         PLAYER checkHorizonal(List<TicTacButton> Buttons){
+
             for (int i = 0; i < 3; i++){
                 if (isSame(Buttons[i], Buttons[i + 3], Buttons[i + 6])){
-
                     text.text = Buttons[i].state == state.ex ? "X wins!!!" : "O wins!!!";
                     return  Buttons[i].state == state.ex ? PLAYER.X:PLAYER.O;
                 }               
             }
                 return PLAYER.None;
         }
-        
+
+         //checks who won on vertical lines
         PLAYER checkVertical(List<TicTacButton> Buttons){
+
             for (int i = 0; i < 8; i += 3){
                 if (isSame(Buttons[i], Buttons[i + 1], Buttons[i + 2])){
-                   
                     text.text = Buttons[i].state == state.ex ? "X wins!!!" : "O wins!!!";
                     return  Buttons[i].state == state.ex ?  PLAYER.X:PLAYER.O;
                 }
@@ -100,6 +100,7 @@ namespace xo
             }
         
 
+        // determines if someone has won or the game is finished.
         void checkForUpdate(){
 
             PLAYER a=checkDiagon(Buttons);
@@ -119,6 +120,7 @@ namespace xo
             }
 
         }
+        //if the 3 boxes are marked by the same player.
         bool isSame(TicTacButton a, TicTacButton b , TicTacButton c)
         {
             if (a.state == b.state && b.state == c.state && b.state !=state.unUsed)
@@ -131,6 +133,7 @@ namespace xo
             lockButtons(true);
 
         }
+        //enable/disable all the buttons in game scene
         void lockButtons(bool flag)
         {
             foreach (TicTacButton button in Buttons)
@@ -184,6 +187,7 @@ namespace xo
 
             lockGame(false);
         }
+        //check if all  boxes are marked
         bool isGameFinished(List<TicTacButton> Buttons)
         {
             for (int i = 0; i < 9; i++){

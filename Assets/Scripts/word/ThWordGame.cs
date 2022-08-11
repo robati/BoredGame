@@ -13,7 +13,7 @@ public class ThWordGame : MonoBehaviour
     public GameObject Box;
     public GameObject WinPanel;
     // string[] thWords={"aaaa","abab","bool"};
-    string[] thWords={"abcdefghijklmnop","DREAMS","TRUE","REALLY","GREAT","KIND","LOVE","PINK","MUSIC","PIANO","OCEAN","RAINBOWS","CUPCAKES"};
+    string[] thWords={"DREAMS","TRUE","REALLY","GREAT","KIND","LOVE","PINK","MUSIC","PIANO","OCEAN","RAINBOWS","CUPCAKES"};
     char[] thLetters={'Q','W','E','R','T','Y','U','I','O','P','L','K',
                 'J','H','G','F','D','S','A','Z','X','C','V','B','N','M'};
     public string MainLetter;
