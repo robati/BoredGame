@@ -10,8 +10,6 @@ namespace xo
    
     public class TicTacButton : MonoBehaviour
     {
-
-        // Use this for initialization
         public Sprite heartSprite;
         public Sprite exSprite;
         public state state = state.unUsed;
@@ -21,16 +19,9 @@ namespace xo
         private Button _button;
         void Awake()
         {
-            // _image = GetComponentInChildren<Image>();
             _button = GetComponent<Button>();
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-         
+         //when box marked it's sprite and state change and player turn changes.
         public void toggle()
         {
                 if (TiicTacboardController.heartTurn)

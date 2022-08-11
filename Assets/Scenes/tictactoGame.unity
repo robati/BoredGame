@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9d547d13a19df4fbe9fca2a50e1645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Buttons:
+  buttonList:
   - {fileID: 226853303}
   - {fileID: 768585041}
   - {fileID: 868627363}
@@ -1286,7 +1286,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: replay
+  m_Text: Replay
 --- !u!222 &908355238
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1699,7 +1699,7 @@ GameObject:
   - component: {fileID: 1817035551}
   - component: {fileID: 1817035550}
   m_Layer: 0
-  m_Name: GameInformation
+  m_Name: GameInformationText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

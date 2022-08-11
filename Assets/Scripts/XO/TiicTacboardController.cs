@@ -12,7 +12,7 @@ namespace xo
     public class TiicTacboardController : MonoBehaviour
     {
         static public bool heartTurn = true;
-        public List<TicTacButton> Buttons;
+        public List<TicTacButton> buttonList;
         public Text text;
         private bool isOnePlayer = false;
         private bool isAIgame = false;
@@ -50,7 +50,7 @@ namespace xo
                              number = Random.Range(0, 9);
                         }
 
-                        if (Buttons[number].state == state.unUsed)// AI plays selected box
+                        if (buttonList[number].state == state.unUsed)// AI plays selected box
                         {
                             StartCoroutine(rivalPlay(number));
                         }
@@ -68,7 +68,7 @@ namespace xo
         //checks who won on two diagons
         PLAYER checkDiagon(List<TicTacButton> Buttons){
             if (isSame(Buttons[0], Buttons[4], Buttons[8]) || isSame(Buttons[2], Buttons[4], Buttons[6])){
-                text.text = Buttons[4].state == state.ex ? "x wins!!!":"o wins!!!";
+                text.text = Buttons[4].state == state.ex ? "x wins!!!":"heart wins!!!";
                 return  Buttons[4].state == state.ex ? PLAYER.X:PLAYER.O;
             }
             else{
@@ -80,7 +80,7 @@ namespace xo
 
             for (int i = 0; i < 3; i++){
                 if (isSame(Buttons[i], Buttons[i + 3], Buttons[i + 6])){
-                    text.text = Buttons[i].state == state.ex ? "X wins!!!" : "O wins!!!";
+                    text.text = Buttons[i].state == state.ex ? "X wins!!!" : "heart wins!!!";
                     return  Buttons[i].state == state.ex ? PLAYER.X:PLAYER.O;
                 }               
             }
@@ -92,7 +92,7 @@ namespace xo
 
             for (int i = 0; i < 8; i += 3){
                 if (isSame(Buttons[i], Buttons[i + 1], Buttons[i + 2])){
-                    text.text = Buttons[i].state == state.ex ? "X wins!!!" : "O wins!!!";
+                    text.text = Buttons[i].state == state.ex ? "X wins!!!" : "heart wins!!!";
                     return  Buttons[i].state == state.ex ?  PLAYER.X:PLAYER.O;
                 }
             }
@@ -103,16 +103,16 @@ namespace xo
         // determines if someone has won or the game is finished.
         void checkForUpdate(){
 
-            PLAYER a=checkDiagon(Buttons);
-            PLAYER b=checkVertical(Buttons);
-            PLAYER c=checkHorizonal(Buttons);
+            PLAYER a=checkDiagon(buttonList);
+            PLAYER b=checkVertical(buttonList);
+            PLAYER c=checkHorizonal(buttonList);
 
             if(!(a==PLAYER.None && b==PLAYER.None && c==PLAYER.None)){
                 finishGame();
                 return;
             }
            
-            if (isGameFinished(Buttons))
+            if (isGameFinished(buttonList))
             {
                 finishGame();
                 text.text = "it's a tie";
@@ -133,95 +133,50 @@ namespace xo
             lockButtons(true);
 
         }
-        //enable/disable all the buttons in game scene
+        //enable/disable all the buttons in game scene when other player is playing or game finished
         void lockButtons(bool flag)
         {
-            foreach (TicTacButton button in Buttons)
+            foreach (TicTacButton button in buttonList)
             {
                 if(button.state==state.unUsed)
                     button.enable(!flag);
             }
         }
          int AIfindBestNumber(){
-             bool flag=false;
-             for(int i=0;i<9;i++){
-                 if(Buttons[i].state!=state.unUsed)
-                 flag=true;
-             }
-            if(!flag)
-                return 4;
-            int a =findBestMove(Buttons);
+
+            if(buttonList[4].state==state.unUsed){
+                return 4;}
+            int a =findBestMove(buttonList);
             Debug.Log(a);
             return a;
         }
-        bool canMarkButton(int number,List<TicTacButton> buttons){
-
-            return buttons[number].state == state.unUsed;
-        }
-        public void playAgain()
+        int findBestMove(List<TicTacButton> Buttons)
         {
-            hasSomeoneWon = false;
-            text.text = "game on!";
-            foreach (TicTacButton button in Buttons)
-            {
-                button.reset();
-            }
-            //  if(isAIgame){//pakkon
-            //     heartTurn=false;
-            // }
-        }
+        int bestVal = -1000;
+        int bestVal2 = -1000;
+        int bestMove = -1;
+        for (int i = 0; i<9; i++){
+            if (canMarkButton(i,Buttons)){
 
-        public void back()
-        {
-            SceneManager.LoadScene(0);
-        }
-        IEnumerator rivalPlay(int number)
-        {
-            
-            lockGame(true);
-            text.text = "wait";
-            yield return new WaitForSeconds(0.5f);
-            text.text = "wait is over";
-            Buttons[number].toggle();
-            text.text = "your turn";
+                Buttons[i].state=state.ex;
+                bestVal2 = minimax(Buttons, 0, false);
+                Debug.Log("x"+i+"="+bestVal2);
+                Buttons[i].state=state.unUsed;
+                }
+            if (bestVal2 > bestVal){
 
-            lockGame(false);
+                bestMove= i;
+                bestVal = bestVal2;
+                }
         }
-        //check if all  boxes are marked
-        bool isGameFinished(List<TicTacButton> Buttons)
-        {
-            for (int i = 0; i < 9; i++){
-                if (Buttons[i].state == state.unUsed)
+         
+        return bestMove;
+    }  
 
-                    return false;
-            }
-            return true;
-        }
-        void lockGame(bool flag)
-        {
-            locked = flag;
-            lockButtons(flag);
-
-        }
-    
-    int evaluate(List<TicTacButton> Buttons)
-        {
-            PLAYER a=checkDiagon(Buttons);
-            PLAYER b=checkVertical(Buttons);
-            PLAYER c=checkHorizonal(Buttons);
-
-            if(a==PLAYER.X||b==PLAYER.X||c==PLAYER.X)
-                return 10;
-            else if(a==PLAYER.O||b==PLAYER.O||c==PLAYER.O)
-                return -10;
-            else
-                return 0 ;
-        }
  
     int minimax(List<TicTacButton> Buttons, int depth, bool isMax)
     {
         int score = evaluate(Buttons);
-    // Debug.Log(depth+" "+score);
         if (score == 10)
             return score-depth;
 
@@ -260,30 +215,71 @@ namespace xo
             return best;
         }
     }
-    
-    // This will return the best possible move for the player
-    int findBestMove(List<TicTacButton> Buttons)
-    {
-        int bestVal = -1000;
-        int bestVal2 = -1000;
-        int bestMove = -1;
-        for (int i = 0; i<9; i++){
-            if (canMarkButton(i,Buttons)){
+     int evaluate(List<TicTacButton> Buttons)
+        {
+            PLAYER a=checkDiagon(Buttons);
+            PLAYER b=checkVertical(Buttons);
+            PLAYER c=checkHorizonal(Buttons);
 
-                Buttons[i].state=state.ex;
-                bestVal2 = minimax(Buttons, 0, false);
-                Debug.Log("x"+i+"="+bestVal2);
-                Buttons[i].state=state.unUsed;
-                }
-            if (bestVal2 > bestVal){
-
-                bestMove= i;
-                bestVal = bestVal2;
-                }
+            if(a==PLAYER.X||b==PLAYER.X||c==PLAYER.X)
+                return 10;
+            else if(a==PLAYER.O||b==PLAYER.O||c==PLAYER.O)
+                return -10;
+            else
+                return 0 ;
         }
-         
-        return bestMove;
-    }                   
+        //if box state is unused it can be marked by player
+        bool canMarkButton(int number,List<TicTacButton> buttons){
+
+            return buttons[number].state == state.unUsed;
+        }
+
+        public void playAgain()
+        {
+            hasSomeoneWon = false;
+            text.text = "game on!";
+            foreach (TicTacButton button in buttonList)
+            {
+                button.reset();
+            }
+
+        }
+
+        public void back()
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        //simulating AI thinking by waiting and playing
+        IEnumerator rivalPlay(int number)
+        {
+            lockGame(true);
+            text.text = "wait";
+            yield return new WaitForSeconds(0.5f);
+            text.text = "wait is over";
+            buttonList[number].toggle();
+            text.text = "your turn";
+
+            lockGame(false);
+        }
+
+        //check if all  boxes are marked
+        bool isGameFinished(List<TicTacButton> Buttons)
+        {
+            for (int i = 0; i < 9; i++){
+                if (Buttons[i].state == state.unUsed)
+
+                    return false;
+            }
+            return true;
+        }
+        void lockGame(bool flag)
+        {
+            locked = flag;
+            lockButtons(flag);
+
+        }
+                 
  
    };
 }

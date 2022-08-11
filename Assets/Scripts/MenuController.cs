@@ -7,19 +7,19 @@ public class MenuController : MonoBehaviour
 {
     // Start is called before the first frame update
     public xo.levelSelector level;
-    public List<GameObject> HighlightList;
-    public List<GameObject> WordOnButtons;
-    public List<GameObject> WordOffButtons;
-    public List<GameObject> LineOnButtons;
-    public List<GameObject> LineOffButtons;
-    public List<GameObject> TickOnButtons;
-    public List<GameObject> TickOffButtons;
-    List<GameObject> MainButtons=null;
-    List<GameObject> GameButtons=null;
+    public List<GameObject> HighlightList=new List<GameObject>();
+    public List<GameObject> WordOnButtons=new List<GameObject>();
+    public List<GameObject> WordOffButtons=new List<GameObject>();
+    public List<GameObject> LineOnButtons=new List<GameObject>();
+    public List<GameObject> LineOffButtons=new List<GameObject>();
+    public List<GameObject> TickOnButtons=new List<GameObject>();
+    public List<GameObject> TickOffButtons=new List<GameObject>();
+    List<GameObject> MainButtons=new List<GameObject>();
+    List<GameObject> GameButtons=new List<GameObject>();
     void Start()
     {
-       MainButtons=WordOffButtons;
-       GameButtons=WordOnButtons;
+       MainButtons.AddRange(WordOffButtons);
+       GameButtons.AddRange(WordOnButtons);
        
        MainButtons.AddRange(TickOffButtons);
        GameButtons.AddRange(TickOnButtons);
@@ -34,105 +34,101 @@ public class MenuController : MonoBehaviour
         
     }
     public void OnWordGameClicked(){
-        PlayerPrefs.SetString("GamePlayed","Word:1") ;
-                SceneManager.LoadScene("thWordGame");
-                            
+
+        saveAndLoadGame("Word:1","thWordGame");
+  
 
 
     }   
      public void OnLineGameClicked(int i){
-         if(i==1){
-             level.onePlayer();
-            PlayerPrefs.SetString("GamePlayed","Line:1") ;
 
+         string gameLevel="";
+         if(i==1){
+            level.onePlayer();
+            gameLevel="Line:1";
          }
          else if(i==2){
-             level.multiPlayer();
-                         PlayerPrefs.SetString("GamePlayed","Line:2") ;
-
+            level.multiPlayer();
+            gameLevel="Line:2" ;
          }
          else if(i==3){
-             level.AIPlayer();
-                         PlayerPrefs.SetString("GamePlayed","Line:3") ;
+            level.AIPlayer();
+            gameLevel="Line:3";
+        }
 
-         }
-                    //  PlayerPrefs.SetString("GamePlayed","Line:1") ;
 
-                SceneManager.LoadScene("theDotsGame");
+        saveAndLoadGame(gameLevel,"theDotsGame");
+
 
     }    
      public void OnXOGameClicked(int i){
+
+         string gameLevel="";
          if(i==1){
              level.onePlayer();
-            PlayerPrefs.SetString("GamePlayed","XO:1") ;
+            gameLevel="XO:1" ;
 
          }
          else if(i==2){
-             level.multiPlayer();
-                         PlayerPrefs.SetString("GamePlayed","XO:2") ;
+            level.multiPlayer();
+            gameLevel="XO:2" ;
 
          }
          else if(i==3){
              level.AIPlayer();
-                         PlayerPrefs.SetString("GamePlayed","XO:3") ;
+             gameLevel="XO:3" ;
 
          }
-                SceneManager.LoadScene("tictactoGame");
+        saveAndLoadGame(gameLevel,"tictactoGame");
 
     }
-         public void OnXOLineClicked(){
-            resetButton();
-            HighlightList[0].SetActive(true);
 
-            foreach(GameObject i in TickOffButtons){
-                                i.SetActive(false);
+    //saves the level selected for continue button and loads game's scene.
+    void saveAndLoadGame(string gameLevelName,string sceneName){
+        PlayerPrefs.SetString("GamePlayed",gameLevelName) ;
+        SceneManager.LoadScene(sceneName);
+    }
+    public void OnXOLineClicked(){
 
+        showAndHideButtons(TickOnButtons,TickOffButtons);
+        HighlightList[0].SetActive(true);
+        }
+    public void OnBoxLineClicked(){
 
-             }
-             foreach(GameObject i in TickOnButtons){
-                                i.SetActive(true);
+        showAndHideButtons(LineOnButtons,LineOffButtons);
+        HighlightList[1].SetActive(true);
+        }
 
+    public void OnWordLineClicked(){
 
-             }
-         }
-         public void OnBoxLineClicked(){
-            resetButton();
-            HighlightList[1].SetActive(true);
+        showAndHideButtons(WordOnButtons,WordOffButtons);
+        HighlightList[2].SetActive(true);
+    }
+    
+    //in order to show the on buttons, offbuttons and other buttons must goto their defaul.
+    void showAndHideButtons(List<GameObject> onButtons,List<GameObject> offButtons){
 
-            foreach(GameObject i in LineOffButtons){
-                                i.SetActive(false);
+        resetButton();
 
-
-             }
-             foreach(GameObject i in LineOnButtons){
-                                i.SetActive(true);
-
-
-             }
-         }
-
-          public void OnWordLineClicked(){
-            resetButton();
-            HighlightList[2].SetActive(true);
-            
-            WordOffButtons[0].SetActive(false);
-            WordOnButtons[0].SetActive(true);
-
-         }
+        foreach(GameObject i in offButtons){
+           i.SetActive(false);
+        }
+        foreach(GameObject i in onButtons){
+           i.SetActive(true);
+        }
+     }
          public void resetButton(){
-                         foreach(GameObject i in HighlightList){
+            foreach(GameObject i in HighlightList){
                 i.SetActive(false);
-
             }
             foreach(GameObject i in MainButtons){
                 i.SetActive(true);
-
             }
             foreach(GameObject i in GameButtons){
                 i.SetActive(false);
-
             }
          }
+
          public void OnContClicked(){
                     string GameIDX=PlayerPrefs.GetString("GamePlayed"," ") ;
                     if (GameIDX=="XO:1"){
