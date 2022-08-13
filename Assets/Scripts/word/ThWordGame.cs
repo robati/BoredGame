@@ -16,9 +16,10 @@ public class ThWordGame : MonoBehaviour
     string[] thWords={"DREAMS","TRUE","REALLY","GREAT","KIND","LOVE","PINK","MUSIC","PIANO","OCEAN","RAINBOWS","CUPCAKES"};
     char[] thLetters={'Q','W','E','R','T','Y','U','I','O','P','L','K',
                 'J','H','G','F','D','S','A','Z','X','C','V','B','N','M'};
+    [HideInInspector]
     public string MainLetter;
     public Text MainTxt;
-    public Text MainTxt2;
+    public Text HintTxt;
     int WordIDX;
     int LetterIndex;
     List<ThLetter> listOfLet=new List<ThLetter>();
@@ -27,8 +28,23 @@ public class ThWordGame : MonoBehaviour
     bool gameStarted=false;
     void Start()
     {
-        Time.timeScale = 0f;
+        pauseGame(true);
+        setInitWordAndLetter();
 
+        PrepareLetters(thWords[WordIDX]); 
+
+        MainTxt.text=thWords[WordIDX];
+        HintTxt.text=thWords[WordIDX];
+        }
+    //if the entered letter is correct set the mainLetter again. 
+    public void CorrectLetterEntered(){
+        LetterIndex++;
+        if(LetterIndex<MainWordLetters.Length){
+            MainLetter=thWords[WordIDX][LetterIndex].ToString();
+            }            
+    }
+    //set main word and its first letter from saved progress of player 
+    void setInitWordAndLetter(){
         WordIDX=PlayerPrefs.GetInt("wordIDX",0) ;
         if(WordIDX>thWords.Length-1){
             WordIDX=0;
@@ -36,21 +52,9 @@ public class ThWordGame : MonoBehaviour
         LetterIndex=0;
         MainWordLetters=thWords[WordIDX].ToCharArray();
         MainLetter=thWords[WordIDX][LetterIndex].ToString();
-
-        PrepareLetters(thWords[WordIDX]); 
-
-        MainTxt.text=thWords[WordIDX];
-        MainTxt2.text=thWords[WordIDX];
-        }
-    public void CorrectLetterEntered(){
-        LetterIndex++;
-        if(LetterIndex<MainWordLetters.Length){
-            MainLetter=thWords[WordIDX][LetterIndex].ToString();
-            }            
     }
+    //if the letter is correct and its the last letter show win pannel and save the progress of player.
     public void LetterAnimFin(char inCharacter){
-        //    Debug.Log(MainWordLetters[MainWordLetters.Length-1]+"  "+r.ToCharArray()[0]);
-        // if(inCharacter==MainWordLetters[MainWordLetters.Length-1]){
         if(LetterIndex>=MainWordLetters.Length){
                 StartCoroutine(ShowWinPanel(0.5f));
                 WordIDX++;
@@ -62,20 +66,20 @@ public class ThWordGame : MonoBehaviour
         SceneManager.LoadScene("thWordGame");
 
     }
-    public ThLetter getMainLetter(){
+    public ThLetter getMainLetterScript(){
         foreach ( ThLetter i in listOfLet)
         {
             if(i!=null)
-            if(i.id==MainLetter){
-            
-                Debug.Log(i.id);
-                return i;
-            }
+                if(i.id==MainLetter){
+
+                    return i;
+                }
         }
         return null;
     }
+    //on hint button clicked event
     public void mainLetterHighlight(bool on){
-        ThLetter i =getMainLetter();
+        ThLetter i =getMainLetterScript();
         i.HighlightOn(on);
     }
     public void onToMenu(){
@@ -83,16 +87,18 @@ public class ThWordGame : MonoBehaviour
         SceneManager.LoadScene("Menu");
 
     }
+
     public void PrepareLetters(string word){
+        //create letters for the main word
         char[] letters= word.ToCharArray();
         int n= word.ToCharArray().Length;
        CreateLetter(n,letters);
 
+        //create random AllLettersNumber-n letter 
        char[] thLetters2={};
        if(AllLettersNumber-n>0){
             thLetters2=new char[AllLettersNumber-n];
             for (int i = 0; i < AllLettersNumber-n; i++){
-
                 int index=UnityEngine.Random.Range(0,thLetters.Length);
                 thLetters2[i]=thLetters[index];
             }
@@ -103,41 +109,37 @@ public class ThWordGame : MonoBehaviour
     private IEnumerator ShowWinPanel(float second){
 
         yield return new WaitForSeconds(second);
-        Time.timeScale = 0f;
-
+        pauseGame(true);
         WinPanel.SetActive(true);
 
 
     }
+    //create letter object and set a random position for it and add force to move around
     public void CreateLetter(int n,char[] letters){
+
         for(int i=0 ; i<n ; i++){
+
             Vector3 position= new Vector3(UnityEngine.Random.Range(-10,10),UnityEngine.Random.Range(-2,4),0);
+            
             GameObject letterPref=Instantiate<GameObject>(TheLetterprefab,position,new Quaternion(),Box.transform);
             letterPref.transform.localPosition=position;
             letterPref.SetActive(true);
+
             ThLetter let = letterPref.GetComponent<ThLetter>();
             let.id=letters[i].ToString();
             listOfLet.Add(let);
-            // letterPref.GetComponent<ThLetter>().id=letters[i].ToString();
+
             letterPref.GetComponent<Rigidbody2D>().AddForce(new Vector2(300,200));
         }
     }
-    public void CheckWord(string id){
-        Debug.Log("ey "+id);
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        if(!gameStarted){
-            gameStarted=true;
-            Debug.Log("ohey");
-        }
-    }
-    public void StartGame(bool play){
-        if(play)
-        Time.timeScale = 1f;
+
+
+
+    public void pauseGame(bool pause){
+        if(!pause)
+            Time.timeScale = 1f;
         else
-                Time.timeScale = 0f;
+            Time.timeScale = 0f;
         
 
     }
