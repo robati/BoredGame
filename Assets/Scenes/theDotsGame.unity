@@ -788,7 +788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -803,7 +803,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 4.7
 --- !u!222 &514544162
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -930,10 +930,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace4e5c39fb856546b6be2aaf5f44b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTurnPic: {fileID: 21300000, guid: 28b6492fb1dcbf84fbab8f4f82debf52, type: 3}
-  lightningTurnPic: {fileID: 21300000, guid: 370adb2e3ada8e84b9231184c0d047d1, type: 3}
+  xTurnPic: {fileID: 21300000, guid: 28b6492fb1dcbf84fbab8f4f82debf52, type: 3}
+  oTurnPic: {fileID: 21300000, guid: 370adb2e3ada8e84b9231184c0d047d1, type: 3}
   turnImage: {fileID: 2069260524}
-  lineAndDots: []
   box: {fileID: 1295792599}
   winner: {fileID: 2037289282}
   winnerImage: {fileID: 204846515}
@@ -1641,8 +1640,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineselected1: {fileID: 21300000, guid: ca2433677181c494183938b27f51c911, type: 3}
   lineselected2: {fileID: 21300000, guid: afceb2d94f28153458849c071d07591c, type: 3}
-  startWin: {fileID: 21300000, guid: 28b6492fb1dcbf84fbab8f4f82debf52, type: 3}
-  lightningWin: {fileID: 21300000, guid: 370adb2e3ada8e84b9231184c0d047d1, type: 3}
+  xWin: {fileID: 21300000, guid: 28b6492fb1dcbf84fbab8f4f82debf52, type: 3}
+  oWin: {fileID: 21300000, guid: 370adb2e3ada8e84b9231184c0d047d1, type: 3}
   insidePic: {fileID: 1684435408}
   rightButtonEvent:
     m_PersistentCalls:
@@ -1660,7 +1659,6 @@ MonoBehaviour:
   - {fileID: 1415912806}
   - {fileID: 1935197842}
   - {fileID: 259939158}
-  buttonnumbers: 00000000010000000200000003000000
   isFinishedBox: 0
   isStarWinner: 0
 --- !u!114 &1360874317
@@ -1894,6 +1892,16 @@ PrefabInstance:
       propertyPath: m_TargetGraphic
       value: 
       objectReference: {fileID: 1592191948}
+    - target: {fileID: 9151471713635203114, guid: 0bfa7fe165dbf1f4cb0733784873f9d0,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.78431374
+      objectReference: {fileID: 0}
+    - target: {fileID: 9151471713635203114, guid: 0bfa7fe165dbf1f4cb0733784873f9d0,
+        type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 4.7
+      objectReference: {fileID: 0}
     - target: {fileID: 9151471713749769050, guid: 0bfa7fe165dbf1f4cb0733784873f9d0,
         type: 3}
       propertyPath: m_Name

@@ -14,8 +14,8 @@ public class lineAndDots : MonoBehaviour {
     public Sprite lineselected1;
     public Sprite lineselected2;
 
-    public Sprite startWin;
-    public Sprite lightningWin;
+    public Sprite xWin;
+    public Sprite oWin;
 
     public Image insidePic;
 
@@ -25,59 +25,49 @@ public class lineAndDots : MonoBehaviour {
 
     public Button[] buttons = new Button[4];
     public Image[] buttonsIm = new Image[4];
-    public List<int> buttonnumbers= new List<int> { 0, 1, 2, 3 };
     public bool isFinishedBox = false;
     public bool isStarWinner = false;
 
-	void Update () {
-
-	}
-    public void abtest()
-    {
-
-    }
     public void OnLineClicked(int buttonnumber)
     {
         toggel(buttonnumber);
-        gameControl.lightningTurn = !gameControl.lightningTurn;
+        gameControl.oTurn = !gameControl.oTurn;
     }
+    //call event to select the line in next box too. set color for the selected line. set isFinishedBox variable.
     public void toggel(int buttonnumber, bool otherColor = false)
     {
-        Debug.Log(buttonnumber +"is on");
         if (buttonnumber== (int)buttonname.rightButton)
             rightButtonEvent.Invoke();
+
         if (buttonnumber == (int)buttonname.topButton)
             topButtonEvent.Invoke();
 
-       int idx= buttonnumbers.LastIndexOf((int)buttonnumber);
-        //Image _image = buttons[idx].GetComponent<Image>();
 
-        if(otherColor)
-            buttonsIm[idx].sprite = lineselected2;
-            // _image.sprite = lineselected2;
+
+        if( otherColor || gameControl.oTurn )
+            buttonsIm[buttonnumber].sprite = lineselected2;
         else
-            buttonsIm[idx].sprite = lineselected1;
-        buttons[idx].enabled=false;
+            buttonsIm[buttonnumber].sprite = lineselected1;
+
+        buttons[buttonnumber].enabled=false;
+
         if (isFinished())
         {
             isFinishedBox = true;
-            if (gameControl.lightningTurn)
+            if (gameControl.oTurn)
             {
-                insidePic.sprite = lightningWin;
+                insidePic.sprite = oWin;
                 isStarWinner = false;
             }
             else
             {
-                insidePic.sprite = startWin;
+                insidePic.sprite = xWin;
                 isStarWinner = true;
             }
         }
     }
 
-public void back()
-        {
-            SceneManager.LoadScene(0);
-        }
+
 
 
     bool isFinished()

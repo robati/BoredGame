@@ -9,118 +9,95 @@ namespace xo
     
 
 public class gameControl : MonoBehaviour {
-    public struct tuple
-    {
-        public int x;
-        public int y;
-    }
 
+    public Sprite xTurnPic;
+    public Sprite oTurnPic;
 
-    public Sprite startTurnPic;
-    public Sprite lightningTurnPic;
-
-    static public bool lightningTurn = false;
+    static public bool oTurn = false;
     public Image turnImage;
-    // public lineAndDots[] lineAndDots;
-    public List<lineAndDots> lineAndDots;
+    List<lineAndDots> lineAndDots=new List<lineAndDots>();
     public Transform box;
     public Text winner;
     public Image winnerImage;
-
     public GameObject panel ;
-    private int endOfColumn = 3, endOfLine = 3;
-    private int starBoxCount = 0;
+    int endOfColumn = 3, endOfLine = 3;
+    int starBoxCount = 0;
     bool done = false;
     bool lockedBoard=false;
     public Transform boxlineTransform;
     public Transform boxlinepanel;
-
-        private bool isOnePlayer = false;
-        private bool isAIgame = false;
+    bool isOnePlayer = false;
+    bool isAIgame = false;
     void Awake () {
-        // if(menu.gameStatus == menu.gameState.multiplayer)
-        // {
-        //     endOfColumn = 1;
-        //     endOfLine = 2;
-        // }
-            isOnePlayer = (levelSelector.gameStatus != gameState.multiplayer);
-            isAIgame= (levelSelector.gameStatus == gameState.AI);
 
-        // //panel = GameObject.Find("AnnounceWinner");
-        ////panel.SetActive(false);
+        isOnePlayer = (levelSelector.gameStatus != gameState.multiplayer);
+        isAIgame= (levelSelector.gameStatus == gameState.AI);
 
         createTable();
     }
 	
 
 	void Update () {
-        // if (Screen.height != 600 || Screen.width != 960 || Screen.fullScreen)
-        // {
-        //     Screen.SetResolution(960, 600, false);
-        // }
 
+        if (oTurn)
+            turnImage.sprite = oTurnPic; 
+        else turnImage.sprite = xTurnPic;
 
-        if (lightningTurn)
-            turnImage.sprite = lightningTurnPic; 
-        else turnImage.sprite = startTurnPic;
-
-
-        if (isGameFinsihed()&&!done)
+        if (isGameFinsihed() && !done)
         {
             done = true;
-             panel.SetActive(true);
-            float isStarWinner = (float)starBoxCount /((float)(endOfColumn + 1) * (float)(endOfLine + 1));
-            winner.text = isStarWinner == 0.5f ? "No" :"";// (isStarWinner > 0.5f ? "x" : "o");//) + starBoxCount + "-" + isStarWinner;
-           
-            if (isStarWinner > 0.5f)
-                 winnerImage.sprite = startTurnPic; 
-            else if( isStarWinner == 0.5f )
-                winnerImage.gameObject.SetActive(false);
-            else winnerImage.sprite = lightningTurnPic;
+            showTheWinner();
         }
-       if (isOnePlayer)// && 
-        if(lightningTurn && !lockedBoard)
+        
+        if(isOnePlayer && oTurn && !lockedBoard)
             rivalPlay();
-       //    // StartCoroutine(rivalPlay());
+           // StartCoroutine(rivalPlay());
 
     }
-  
+    void showTheWinner(){
+            panel.SetActive(true);
+            float isStarWinner = (float)starBoxCount /((float)(endOfColumn + 1) * (float)(endOfLine + 1));
+            winner.text = isStarWinner == 0.5f ? "No" :"";
+           
+            if (isStarWinner > 0.5f)
+                 winnerImage.sprite = xTurnPic; 
+            else if( isStarWinner == 0.5f )
+                winnerImage.gameObject.SetActive(false);
+            else winnerImage.sprite = oTurnPic;
+    }
+    //create the table and lineAndDots list and connect top and bottom lines in each box to the last box.
      private void createTable()
     {
         int start = 0;
         int counter = 0;
-        //  lineAndDots = boxlinepanel.gameObject.GetComponentsInChildren<lineAndDots>();
 
         for (int i = endOfColumn; i > start - 1; i--)
         {
             Transform thisLineTransform = Instantiate(boxlineTransform);
-                thisLineTransform.SetParent(boxlinepanel, false);
-                thisLineTransform.gameObject.SetActive(true);
+            thisLineTransform.SetParent(boxlinepanel, false);
+            thisLineTransform.gameObject.SetActive(true);
+
             for (int j = endOfLine; j > start - 1; j--)
             {
-
-
-                 Transform tempTransformObject = Instantiate(box);
+                Transform tempTransformObject = Instantiate(box);
                 tempTransformObject.SetParent(thisLineTransform, false);
-                lineAndDots lineAndDotsScrip=new lineAndDots();
-                 lineAndDotsScrip =tempTransformObject.GetComponent<lineAndDots>();
+                lineAndDots lineAndDotsScrip =tempTransformObject.GetComponent<lineAndDots>();
+
                 if (j != endOfLine)
                 {
                     lineAndDots otherButtonlineAndDotsScrip = getScript(counter - 1);
-                     UnityEngine.Events.UnityAction leftButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.leftButton); };
+                    UnityEngine.Events.UnityAction leftButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.leftButton); };
                     lineAndDotsScrip.rightButtonEvent.AddListener(leftButtonAction);
-                
-             
                 }
+
                 if (i != endOfColumn)
                 {
                     lineAndDots otherButtonlineAndDotsScrip =getScript(counter - (endOfLine + 1));
                     UnityEngine.Events.UnityAction bottomButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.bottomButton); };
                     lineAndDotsScrip.topButtonEvent.AddListener(bottomButtonAction);
                 }
-                lineAndDots.Insert(counter,lineAndDotsScrip);//counter, tempTransformObject);
-                Debug.Log("counter");
-                Debug.Log(counter);
+
+                lineAndDots.Insert(counter,lineAndDotsScrip);
                 counter++;
             }
         }
@@ -131,15 +108,15 @@ public class gameControl : MonoBehaviour {
     {
         SceneManager.LoadScene(0);
     }
+    //set the starBoxCount to determine the winner and check if all the boxes are finished then the game is finished
     bool isGameFinsihed()
     {
         starBoxCount = 0;
         int lenght = (endOfColumn + 1) * (endOfLine + 1);
         for (int i = lenght - 1; i >= 0; i--)
         {
-        
             lineAndDots lineAndDotsScrip = getScript(i);
-            // lineAndDots lineAndDotsScrip = lineAndDots[i];//getScript(i);
+
             if (lineAndDotsScrip.isFinishedBox)
             {
                 starBoxCount += lineAndDotsScrip.isStarWinner ? 1 : 0;
@@ -148,17 +125,12 @@ public class gameControl : MonoBehaviour {
             {
                 return false;
             }
-
         }
         return true;
     }
     lineAndDots getScript(int idx)
     {
-        // Transform box = lineAndDots[idx];
-        // lineAndDots lineAndDotsScript = box.GetComponent<lineAndDots>();
-        // Debug.Log(idx);
-        // Debug.Log(lineAndDots.Count);
-        return lineAndDots[idx];//lineAndDotsScript;
+        return lineAndDots[idx];
     }
     private void rivalPlay()
    // IEnumerator rivalPlay()
@@ -167,19 +139,18 @@ public class gameControl : MonoBehaviour {
         int w = endOfLine + 1;
         int boxNumber;
         int buttonNumber;
-        do {
+        do { 
             boxNumber = findABox();
             buttonNumber = findALine(boxNumber);
-        } while (buttonNumber == -1);
+        } while (buttonNumber == -1);// AI can only play right and top lines of each box,it miight find an unfinished box but cannot select any line in it
 
         lineAndDots lineAndDotsScript =  getScript(boxNumber);
-        // lineAndDots lineAndDotsScript = lineAndDots[boxNumber];// getScript(boxNumber);
      //   yield return new WaitForSeconds(0.5f);
         lineAndDotsScript.toggel(buttonNumber,true);
-        gameControl.lightningTurn = !gameControl.lightningTurn;
+        gameControl.oTurn = !gameControl.oTurn;
         lockedBoard = false;
     }
-    
+    //choose a random box for AI that is not finished before.
     int findABox()
     {
         lineAndDots lineAndDotsScript;
@@ -187,20 +158,20 @@ public class gameControl : MonoBehaviour {
         int w = endOfLine + 1;
         do
         {
-            boxNumber = Random.Range(0, lineAndDots.Count);//Length);
-            Debug.Log(lineAndDots.Count);
+            boxNumber = Random.Range(0, lineAndDots.Count);
             lineAndDotsScript = getScript(boxNumber);
-            // lineAndDotsScript = lineAndDots[boxNumber] ;//getScript(boxNumber);
         } while (lineAndDotsScript.isFinishedBox);
-        Debug.Log(boxNumber + "box is chosen");
+
         return boxNumber;
     }
+    //choose a random line in the selected box for AI that is not forbidden or selected before.
     int findALine(int boxNumber)
     {
         lineAndDots lineAndDotsScript = getScript(boxNumber);
-        // lineAndDots lineAndDotsScript =lineAndDots[boxNumber];// getScript(boxNumber);
+
         int buttonNumber=-1;
         int w = endOfLine + 1;
+        // int h = endOfColumn + 1;
         bool isLeftButton;
         bool isBottomButton;
         bool isForbiddenButton;
@@ -210,18 +181,29 @@ public class gameControl : MonoBehaviour {
             int idx = Random.Range(0, lines.Count);
             if (lines.Count == 0)
                 return -1;
-
             buttonNumber = lines[idx];
             lines.RemoveAt(idx);
-            isLeftButton = (buttonNumber == (int)buttonname.leftButton) && ((boxNumber + 1) % w != 0);
-            isBottomButton = (buttonNumber == (int)buttonname.bottomButton) && (lineAndDots.Count- w > boxNumber);//Length - w > boxNumber);
-            //Debug.Log("number box=" + boxNumber + " button=" + buttonNumber + " isLeftButton=" + isLeftButton + "isBottomButton" + isBottomButton);
-            isForbiddenButton = isLeftButton || isBottomButton;
-            Debug.Log(buttonNumber + " is chosen enabled:" + lineAndDotsScript.buttons[buttonNumber].enabled + " left:" + isLeftButton + " bottom:" + isBottomButton);
+
+            bool isInLastColumn = (boxNumber + 1) % w == 0 ;
+            bool isInLastRow = lineAndDots.Count- w <= boxNumber ;//16-(3+1)=12 --> 12 <= boxNumber <= 15
+
+            isLeftButton = (buttonNumber == (int)buttonname.leftButton); 
+            isBottomButton = (buttonNumber == (int)buttonname.bottomButton);
+
+            isForbiddenButton = (isLeftButton && !isInLastColumn) || (isBottomButton && !isInLastRow);
+
         } while (!lineAndDotsScript.buttons[buttonNumber].enabled || isForbiddenButton);
-        Debug.Log(buttonNumber + "line is chosen");
+
         return buttonNumber;
     }
+    /*NOTES:
+           _        _
+     in a |_| only   | are selectable ( |_ are only selected in last row and column) 
+     the left line in a box is selectable using right line in the next box in the next column
+     the bottom line in a box is selectable using top line in the next box in the next row
+
+
+    */
 
 };
 }
