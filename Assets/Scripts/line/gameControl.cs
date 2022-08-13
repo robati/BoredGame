@@ -21,8 +21,8 @@ public class gameControl : MonoBehaviour {
 
     static public bool lightningTurn = false;
     public Image turnImage;
-    public lineAndDots[] lineAndDots;
-    // public List<lineAndDots> lineAndDots;
+    // public lineAndDots[] lineAndDots;
+    public List<lineAndDots> lineAndDots;
     public Transform box;
     public Text winner;
     public Image winnerImage;
@@ -84,27 +84,29 @@ public class gameControl : MonoBehaviour {
        //    // StartCoroutine(rivalPlay());
 
     }
-    private void createTable()
+  
+     private void createTable()
     {
         int start = 0;
         int counter = 0;
-         lineAndDots = boxlinepanel.gameObject.GetComponentsInChildren<lineAndDots>();
+        //  lineAndDots = boxlinepanel.gameObject.GetComponentsInChildren<lineAndDots>();
 
         for (int i = endOfColumn; i > start - 1; i--)
         {
-            // Transform thisLineTransform = Instantiate(boxlineTransform);
-                // thisLineTransform.SetParent(boxlinepanel, false);
-                // thisLineTransform.gameObject.SetActive(true);
+            Transform thisLineTransform = Instantiate(boxlineTransform);
+                thisLineTransform.SetParent(boxlinepanel, false);
+                thisLineTransform.gameObject.SetActive(true);
             for (int j = endOfLine; j > start - 1; j--)
             {
 
 
-                //  Transform tempTransformObject = Instantiate(box);
-                // tempTransformObject.SetParent(thisLineTransform, false);
+                 Transform tempTransformObject = Instantiate(box);
+                tempTransformObject.SetParent(thisLineTransform, false);
+                lineAndDots lineAndDotsScrip=new lineAndDots();
+                 lineAndDotsScrip =tempTransformObject.GetComponent<lineAndDots>();
                 if (j != endOfLine)
                 {
-                    lineAndDots lineAndDotsScrip =lineAndDots[counter]; //tempTransformObject.GetComponent<lineAndDots>();
-                    lineAndDots otherButtonlineAndDotsScrip =lineAndDots[counter-1];// getScript(counter - 1);
+                    lineAndDots otherButtonlineAndDotsScrip = getScript(counter - 1);
                      UnityEngine.Events.UnityAction leftButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.leftButton); };
                     lineAndDotsScrip.rightButtonEvent.AddListener(leftButtonAction);
                 
@@ -112,12 +114,13 @@ public class gameControl : MonoBehaviour {
                 }
                 if (i != endOfColumn)
                 {
-                    lineAndDots lineAndDotsScrip = lineAndDots[counter];//tempTransformObject.GetComponent<lineAndDots>();
-                    lineAndDots otherButtonlineAndDotsScrip =lineAndDots[counter - (endOfLine + 1)];// getScript(counter - (endOfLine + 1));
+                    lineAndDots otherButtonlineAndDotsScrip =getScript(counter - (endOfLine + 1));
                     UnityEngine.Events.UnityAction bottomButtonAction = () => { otherButtonlineAndDotsScrip.toggel((int)buttonname.bottomButton); };
                     lineAndDotsScrip.topButtonEvent.AddListener(bottomButtonAction);
                 }
-                //lineAndDots.Insert(counter, tempTransformObject);
+                lineAndDots.Insert(counter,lineAndDotsScrip);//counter, tempTransformObject);
+                Debug.Log("counter");
+                Debug.Log(counter);
                 counter++;
             }
         }
@@ -134,7 +137,9 @@ public class gameControl : MonoBehaviour {
         int lenght = (endOfColumn + 1) * (endOfLine + 1);
         for (int i = lenght - 1; i >= 0; i--)
         {
-            lineAndDots lineAndDotsScrip = lineAndDots[i];//getScript(i);
+        
+            lineAndDots lineAndDotsScrip = getScript(i);
+            // lineAndDots lineAndDotsScrip = lineAndDots[i];//getScript(i);
             if (lineAndDotsScrip.isFinishedBox)
             {
                 starBoxCount += lineAndDotsScrip.isStarWinner ? 1 : 0;
@@ -147,12 +152,14 @@ public class gameControl : MonoBehaviour {
         }
         return true;
     }
-    /*lineAndDots getScript(int idx)
+    lineAndDots getScript(int idx)
     {
-        Transform box = lineAndDots[idx];
-        lineAndDots lineAndDotsScript = box.GetComponent<lineAndDots>();
-        return lineAndDotsScript;
-    }*/
+        // Transform box = lineAndDots[idx];
+        // lineAndDots lineAndDotsScript = box.GetComponent<lineAndDots>();
+        // Debug.Log(idx);
+        // Debug.Log(lineAndDots.Count);
+        return lineAndDots[idx];//lineAndDotsScript;
+    }
     private void rivalPlay()
    // IEnumerator rivalPlay()
     {
@@ -165,7 +172,8 @@ public class gameControl : MonoBehaviour {
             buttonNumber = findALine(boxNumber);
         } while (buttonNumber == -1);
 
-        lineAndDots lineAndDotsScript = lineAndDots[boxNumber];// getScript(boxNumber);
+        lineAndDots lineAndDotsScript =  getScript(boxNumber);
+        // lineAndDots lineAndDotsScript = lineAndDots[boxNumber];// getScript(boxNumber);
      //   yield return new WaitForSeconds(0.5f);
         lineAndDotsScript.toggel(buttonNumber,true);
         gameControl.lightningTurn = !gameControl.lightningTurn;
@@ -179,15 +187,18 @@ public class gameControl : MonoBehaviour {
         int w = endOfLine + 1;
         do
         {
-            boxNumber = Random.Range(0, lineAndDots.Length);
-            lineAndDotsScript = lineAndDots[boxNumber] ;//getScript(boxNumber);
+            boxNumber = Random.Range(0, lineAndDots.Count);//Length);
+            Debug.Log(lineAndDots.Count);
+            lineAndDotsScript = getScript(boxNumber);
+            // lineAndDotsScript = lineAndDots[boxNumber] ;//getScript(boxNumber);
         } while (lineAndDotsScript.isFinishedBox);
         Debug.Log(boxNumber + "box is chosen");
         return boxNumber;
     }
     int findALine(int boxNumber)
     {
-        lineAndDots lineAndDotsScript =lineAndDots[boxNumber];// getScript(boxNumber);
+        lineAndDots lineAndDotsScript = getScript(boxNumber);
+        // lineAndDots lineAndDotsScript =lineAndDots[boxNumber];// getScript(boxNumber);
         int buttonNumber=-1;
         int w = endOfLine + 1;
         bool isLeftButton;
@@ -203,7 +214,7 @@ public class gameControl : MonoBehaviour {
             buttonNumber = lines[idx];
             lines.RemoveAt(idx);
             isLeftButton = (buttonNumber == (int)buttonname.leftButton) && ((boxNumber + 1) % w != 0);
-            isBottomButton = (buttonNumber == (int)buttonname.bottomButton) && (lineAndDots.Length - w > boxNumber);
+            isBottomButton = (buttonNumber == (int)buttonname.bottomButton) && (lineAndDots.Count- w > boxNumber);//Length - w > boxNumber);
             //Debug.Log("number box=" + boxNumber + " button=" + buttonNumber + " isLeftButton=" + isLeftButton + "isBottomButton" + isBottomButton);
             isForbiddenButton = isLeftButton || isBottomButton;
             Debug.Log(buttonNumber + " is chosen enabled:" + lineAndDotsScript.buttons[buttonNumber].enabled + " left:" + isLeftButton + " bottom:" + isBottomButton);
